@@ -1,5 +1,5 @@
 /**
- * Created by Bene on 08.12.2014.
+ * Created by explicat on 08.12.2014.
  */
 public class NetworkProblem {
 
