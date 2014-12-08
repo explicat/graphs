@@ -92,7 +92,13 @@ public class Network {
 
     public void unmarkAllNodes() {
         for (Node n : nodes) {
-            n.setMark(0);
+            n.setMark(Node.UNMARKED);
+        }
+    }
+
+    public void unsetParents() {
+        for (Node n : nodes) {
+            n.setParent(null);
         }
     }
 
@@ -103,5 +109,25 @@ public class Network {
 
     public List<Edge> getEdges() {
         return this.edges;
+    }
+
+    public Map<Node, List<Edge>> getEdgesByNode() {
+        return edgesByNode;
+    }
+
+    public Edge getEdge(Node from, Node to) {
+        List<Edge> outgoingEdges = edgesByNode.get(from);
+        for (Edge edge : outgoingEdges) {
+            if (edge.getTo().equals(to)) {
+                return edge;
+            }
+        }
+
+        return null;
+    }
+
+    public void addEdge(Edge edge) {
+        edges.add(edge);
+        edgesByNode.get(edge.getFrom()).add(edge);
     }
 }

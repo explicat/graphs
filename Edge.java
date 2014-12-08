@@ -8,6 +8,7 @@ public class Edge {
     private int capacity;
     private int cost;
     private int flow;
+    private Edge inverseEdge;
 
     public Edge(Node from, Node to) {
         this.from = from;
@@ -36,7 +37,7 @@ public class Edge {
 
     /**
      * Clone a given edge e
-     * @param e
+     * @param e edge to clone
      */
     public Edge(Edge e) {
         this.from = e.from;
@@ -84,5 +85,17 @@ public class Edge {
 
     public void setFlow(int flow) {
         this.flow = flow;
+    }
+
+    public int getRemainingCapacity() {
+        return this.capacity - this.flow;
+    }
+
+    public Edge getInverseEdge() {
+        return inverseEdge;
+    }
+
+    public void setInverseEdge(Edge inverseEdge) {
+        this.inverseEdge = inverseEdge;
     }
 }
