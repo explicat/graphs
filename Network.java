@@ -115,15 +115,18 @@ public class Network {
         return edgesByNode;
     }
 
-    public Edge getEdge(Node from, Node to) {
+    public Edge getEdgeMaxRemainingCapacity(Node from, Node to) {
         List<Edge> outgoingEdges = edgesByNode.get(from);
+        Edge maxEdge = null;
+        int maxRemainingCapacity = Integer.MIN_VALUE;
         for (Edge edge : outgoingEdges) {
-            if (edge.getTo().equals(to)) {
-                return edge;
+            if (edge.getTo().equals(to) && edge.getRemainingCapacity() > maxRemainingCapacity) {
+                maxEdge = edge;
+                maxRemainingCapacity = edge.getRemainingCapacity();
             }
         }
 
-        return null;
+        return maxEdge;
     }
 
     public void addEdge(Edge edge) {
