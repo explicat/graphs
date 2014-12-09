@@ -133,4 +133,25 @@ public class Network {
         edges.add(edge);
         edgesByNode.get(edge.getFrom()).add(edge);
     }
+
+    public Network createResidual() {
+        Network residual = new Network(this);
+
+        // Also create inverse edges with capacity 0
+        // Clone list of edges since we're modifying the original list while iterating
+        List<Edge> forwardEdges = new ArrayList<>(residual.getEdges());
+        for (Edge forwardEdge : forwardEdges) {
+            Edge backwardEdge = new Edge(forwardEdge.getTo(), forwardEdge.getFrom());
+            backwardEdge.setCapacity(0);
+            backwardEdge.setFlow(0);
+            backwardEdge.setCost(-forwardEdge.getCost());
+
+            forwardEdge.setInverseEdge(backwardEdge);
+            backwardEdge.setInverseEdge(forwardEdge);
+
+            residual.addEdge(backwardEdge);
+        }
+
+        return residual;
+    }
 }
