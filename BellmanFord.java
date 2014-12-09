@@ -19,7 +19,7 @@ public class BellmanFord {
             predecessor[i] = -1;
         }
 
-        // Loop nodes-1 times
+        // Loop |nodes|-1 times
         for (int n=0; n<nodes-1; n++) {
 
             // Loop over edges
@@ -47,7 +47,7 @@ public class BellmanFord {
                     if (distance[u] + graph[u][v] < distance[v]) {
                         // There must be a negative cycle
 
-                        // Detect neative cycle
+                        // Detect negative cycle
                         List<Integer> cycleNodes = new LinkedList<>();
                         cycleNodes.add(v);
                         int parent = v;

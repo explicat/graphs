@@ -13,16 +13,16 @@ public class NetworkProblem {
                 {   0, 0, 0, 0, 0, 0, 6 },
                 {   0, 0, 0, 0, 0, 0, 0 }    };
 
-        //int source = 0;
-        //int sink = 6;
+        int sorceVal = 0;
+        int sinkVal = 6;
 
         Network network = new Network(adj);
         Node source = null;
         Node sink = null;
         for (Node<Integer> node : network.getNodes()) {
-            if (0 == node.getValue()) {
+            if (sorceVal == node.getValue()) {
                 source = node;
-            } else if (6 == node.getValue()) {
+            } else if (sinkVal == node.getValue()) {
                 sink = node;
             }
         }
