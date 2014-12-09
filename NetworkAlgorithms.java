@@ -59,10 +59,10 @@ public class NetworkAlgorithms {
         // Reconstruct path
         List<Edge> path = new LinkedList<>();
         Node current = sink;
-        while(null != sink.getParent()) {
-            Edge edgeOnPath = network.getEdge(sink.getParent(), current);
+        while(null != current.getParent()) {
+            Edge edgeOnPath = network.getEdgeMaxRemainingCapacity(current.getParent(), current);
             path.add(edgeOnPath);
-            current = sink.getParent();
+            current = current.getParent();
         }
         Collections.reverse(path);
         return path;
