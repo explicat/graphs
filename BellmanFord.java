@@ -8,7 +8,12 @@ import java.util.List;
  */
 public class BellmanFord {
 
-    public static List<Integer> containsNegativeCycle(int[][] graph) {
+    /**
+     * Detectes whether the graph given as adjacency matrix contains a negative cycle
+     * @param graph definded by adjacency matrix
+     * @return the list of nodes along the negative cycle if there is one, null if the graph does not contain any negative cycles
+     */
+    public static List<Integer> containsNegativeCycle(int[][] graph, int source) {
         int nodes = graph.length;
         int[] distance = new int[nodes];
         int[] predecessor = new int[nodes];
@@ -18,11 +23,12 @@ public class BellmanFord {
             distance[i] = Integer.MAX_VALUE;
             predecessor[i] = -1;
         }
+        distance[source] = 0;
 
         // Loop |nodes|-1 times
         for (int n=0; n<nodes-1; n++) {
 
-            // Loop over edges
+            // Loop through edges
             for (int u=0; u<nodes; u++) {
                 for (int v=0; v<nodes; v++) {
 
@@ -38,7 +44,7 @@ public class BellmanFord {
             }
         }
 
-        // Loop over edges
+        // Loop through edges again
         for (int u=0; u<nodes; u++) {
             for (int v=0; v<nodes; v++) {
 

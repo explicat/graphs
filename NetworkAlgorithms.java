@@ -1,9 +1,62 @@
+import model.Edge;
+import model.Network;
+import model.Node;
+
 import java.util.*;
 
 /**
  * Created by explicat on 08.12.2014.
  */
 public class NetworkAlgorithms {
+
+    /**
+     * Negative cycle detection depending on costs
+     * @return
+     */
+    public static List<Edge> bellmanFord(Network network, Node source) {
+        // Use node markers as distance labels
+        int nodes = network.getNodes().size();
+
+        // Initialize: predecessor of each node should be unset, distance infinity
+        for (Node node : network.getNodes()) {
+            node.setEdgeFromPredecessor(null);
+            node.setMark(Integer.MAX_VALUE);
+        }
+        source.setMark(0);
+
+        // Loop |nodes|-1 times
+        for (int n=0; n<nodes-1; n++) {
+
+            // Loop through edges
+            for (Edge edge : network.getEdges()) {
+                if (edge.getFrom().getMark() + edge.getCost() < edge.getTo().getMark()) {
+                    edge.getTo().setMark(edge.getFrom().getMark() + edge.getCost());
+                    edge.getTo().setEdgeFromPredecessor(edge);
+                }
+            }
+        }
+
+        // Loop through edges again
+        for (Edge edge : network.getEdges()) {
+            if (edge.getFrom().getMark() + edge.getCost() < edge.getTo().getMark()) {
+                // There must be a negative cycle
+
+                // Get the negative cycle
+                List<Edge> cycle = new LinkedList<>();
+                cycle.add(edge);
+                Edge edgeToPredeccesor = edge;
+                while (null != (edgeToPredeccesor = edgeToPredeccesor.getFrom().getEdgeFromPredecessor()) && !cycle.contains(edgeToPredeccesor)) {
+                    cycle.add(edgeToPredeccesor);
+                }
+
+                return cycle;
+            }
+        }
+
+        return null;
+    }
+
+
 
 
     public static List<Edge> bfs(Network network, Node source, Node sink) {
@@ -23,7 +76,7 @@ public class NetworkAlgorithms {
         assert(network.getNodes().contains(sink));
 
         network.unmarkAllNodes();
-        network.unsetParents();
+        network.unsetPredeccesors();
 
         boolean foundSink = false;
         Queue<Node> queue = new LinkedList<>();
@@ -45,7 +98,7 @@ public class NetworkAlgorithms {
                     Node to = edge.getTo();
                     if (to.getMark() == Node.UNMARKED && !queue.contains(to)) {
                         queue.add(to);
-                        to.setParent(node); // Set current node as new node's parent to enable backward navigation
+                        to.setEdgeFromPredecessor(edge); // Set current node as new node's parent to enable backward navigation
                     }
                 }
             }
@@ -59,10 +112,9 @@ public class NetworkAlgorithms {
         // Reconstruct path
         List<Edge> path = new LinkedList<>();
         Node current = sink;
-        while(null != current.getParent()) {
-            Edge edgeOnPath = network.getEdgeMaxRemainingCapacity(current.getParent(), current);
-            path.add(edgeOnPath);
-            current = current.getParent();
+        while(null != current.getEdgeFromPredecessor()) {
+            path.add(current.getEdgeFromPredecessor());
+            current = current.getEdgeFromPredecessor().getFrom();
         }
         Collections.reverse(path);
         return path;
@@ -70,16 +122,11 @@ public class NetworkAlgorithms {
 
 
 
-    public static int fordFulkerson(final Network network, Node source, Node sink) {
+    public static Network fordFulkerson(final Network network, Node source, Node sink) {
         Network residual = network.createResidual();
-        // Find source in residual network
-        for (Node node : residual.getNodes()) {
-            if (node.getValue().equals(source.getValue())) {
-                source = node;
-            } else if (node.getValue().equals(sink.getValue())) {
-                sink = node;
-            }
-        }
+        // Find source and sink nodes in residual network
+        source = residual.getNodeByValue(source.getValue());
+        sink = residual.getNodeByValue(sink.getValue());
 
         int maxFlow = 0;
         List<Edge> path;
@@ -99,6 +146,7 @@ public class NetworkAlgorithms {
             maxFlow += pathFlow;
         }
 
-        return maxFlow;
+        residual.setMaxFlow(maxFlow);
+        return residual;
     }
 }

@@ -1,3 +1,5 @@
+package model;
+
 /**
  * Created by explicat on 03.12.2014.
  */
@@ -9,6 +11,7 @@ public class Edge {
     private int cost;
     private int flow;
     private Edge inverseEdge;
+    private boolean isResidual = false;
 
     public Edge(Node from, Node to) {
         this.from = from;
@@ -97,5 +100,13 @@ public class Edge {
 
     public void setInverseEdge(Edge inverseEdge) {
         this.inverseEdge = inverseEdge;
+    }
+
+    public boolean isResidual() {
+        return isResidual;
+    }
+
+    public void setResidual(boolean isResidual) {
+        this.isResidual = isResidual;
     }
 }

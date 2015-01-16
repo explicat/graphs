@@ -1,9 +1,15 @@
+package maxFlow;
+
+import model.Network;
+import model.Node;
+
 /**
  * Created by explicat on 08.12.2014.
  */
 public class NetworkProblem {
 
     public static void main(String[] args) {
+        // Same max-flow problem, however here the graph is represented by objects of nodes and edges
         int[][] adj = {
                 {   0, 5, 5, 2, 0, 0, 0 },
                 {   0, 0, 0, 0, 1, 0, 2 },

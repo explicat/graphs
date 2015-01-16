@@ -1,3 +1,5 @@
+package model;
+
 import java.util.*;
 
 /**
@@ -9,6 +11,8 @@ public class Network {
     private List<Edge> edges;
 
     private Map<Node, List<Edge>> edgesByNode;
+
+    private int maxFlow = -1;
 
 
     public Network(int[][] capacities) {
@@ -96,9 +100,9 @@ public class Network {
         }
     }
 
-    public void unsetParents() {
+    public void unsetPredeccesors() {
         for (Node n : nodes) {
-            n.setParent(null);
+            n.setEdgeFromPredecessor(null);
         }
     }
 
@@ -145,6 +149,7 @@ public class Network {
             backwardEdge.setCapacity(0);
             backwardEdge.setFlow(0);
             backwardEdge.setCost(-forwardEdge.getCost());
+            backwardEdge.setResidual(true);
 
             forwardEdge.setInverseEdge(backwardEdge);
             backwardEdge.setInverseEdge(forwardEdge);
@@ -153,5 +158,25 @@ public class Network {
         }
 
         return residual;
+    }
+
+    public Node getNodeByValue(Object value) {
+        for (Node node : nodes) {
+            if (node.getValue().equals(value)) {
+                return node;
+            }
+        }
+        return null;
+    }
+
+
+    /** default getters and setters **/
+
+    public int getMaxFlow() {
+        return maxFlow;
+    }
+
+    public void setMaxFlow(int maxFlow) {
+        this.maxFlow = maxFlow;
     }
 }

@@ -1,9 +1,12 @@
+package maxFlow;
+
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
 
 /**
+ * Ford Fulkerson algorithm for simple max-flow problems in directed acyclic graph (diagraph)
  * Created by explicat on 22.11.2014.
  */
 public class FordFulkerson {
@@ -89,7 +92,7 @@ public class FordFulkerson {
         List<Integer> path;
         while(null != (path = bfs(residualGraph, source, sink))) {
 
-            // Find maximum capacity along edges
+            // Find maximum (remaining) capacity along edges. We cannot move more flow than the minimum available remaining capacity
             int pathFlow = Integer.MAX_VALUE;
             for (int i=0; i<path.size()-1; i++) {
                 int u = path.get(i);
@@ -97,6 +100,7 @@ public class FordFulkerson {
                 pathFlow = Math.min(pathFlow, residualGraph[u][v]);
             }
 
+            // Move flow and update residual graph
             for (int i=0; i<path.size()-1; i++) {
                 int u = path.get(i);
                 int v = path.get(i+1);
@@ -126,7 +130,7 @@ public class FordFulkerson {
 
 
     public static void main(String[] args) {
-
+        // Example
         int[][] adj = {
                 {   0, 5, 5, 2, 0, 0, 0 },
                 {   0, 0, 0, 0, 1, 0, 2 },
@@ -143,7 +147,5 @@ public class FordFulkerson {
 
         System.out.println(maxFlow);
     }
-
-
 
 }

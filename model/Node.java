@@ -1,3 +1,5 @@
+package model;
+
 /**
  * Created by explicat on 03.12.2014.
  */
@@ -7,7 +9,7 @@ public class Node<T> {
 
     private T value;
     private int mark;
-    private Node parent;
+    private Edge edgeFromPredecessor;
 
     public Node(T value) {
         this.value = value;
@@ -35,11 +37,11 @@ public class Node<T> {
         return this.mark;
     }
 
-    public Node getParent() {
-        return parent;
+    public Edge getEdgeFromPredecessor() {
+        return edgeFromPredecessor;
     }
 
-    public void setParent(Node parent) {
-        this.parent = parent;
+    public void setEdgeFromPredecessor(Edge edgeFromPredecessor) {
+        this.edgeFromPredecessor = edgeFromPredecessor;
     }
 }
