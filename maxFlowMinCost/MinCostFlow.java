@@ -1,4 +1,5 @@
-import maxFlow.FordFulkerson;
+package maxFlowMinCost;
+
 import model.Edge;
 import model.Network;
 import model.Node;
@@ -13,9 +14,9 @@ import java.util.Queue;
 public class MinCostFlow {
 
 
-    public static int minCostFlow(final Network network, Node source, Node sink) {
+    public static int minCostFlow(final Network network, Node source, Node sink, int maxFlow) {
         // Determine max flow
-        Network residual = NetworkAlgorithms.fordFulkerson(network, source, sink);
+        Network residual = NetworkAlgorithms.fordFulkerson(network, source, sink, maxFlow);
         Node residualSource = residual.getNodeByValue(source.getValue());
         Node residualSink = residual.getNodeByValue(sink.getValue());
 
@@ -82,62 +83,11 @@ public class MinCostFlow {
      * @param sink
      * @return
      */
-    public static int minCostFlow(int[][] capacities, int[][] costsPerUnit, int source, int sink) {
-        int nodes = capacities.length;
-
-        FordFulkerson fordFulkerson = new FordFulkerson(capacities);
-        int maxFlow = fordFulkerson.fordFulkerson(source, sink);
-        int[][] residualGraph = fordFulkerson.getResidualGraph();
-        System.out.println("maxFlow: " + maxFlow);
-
-        List<Integer> negativeCycle;
-        // As long as a negative cycle exists
-        // TODO We need to look for negative cycles in the residual graph with respect to the costs, not to the flow
-        while (null != (negativeCycle = BellmanFord.containsNegativeCycle(residualGraph, source))) {
-            // Remove negative cycles
-
-            // Get min flow of residual graph along cycles edges
-            int minFlow = Integer.MAX_VALUE;
-            for (int i=0; i<negativeCycle.size() - 1; i++) {
-                int u = negativeCycle.get(i);
-                int v = negativeCycle.get(i+1);
-
-                minFlow = Math.min(minFlow, residualGraph[u][v]);
-            }
-
-            // Push this min flow in opposite direction along cycle. Update residual graph
-            for (int i=0; i<negativeCycle.size() - 1; i++) {
-                int u = negativeCycle.get(i);
-                int v = negativeCycle.get(i+1);
-
-                residualGraph[u][v] -= minFlow;
-                residualGraph[v][u] += minFlow;
-            }
-        }
-
-        // Sum up costs of final flow
-        int cost = 0;
-        boolean[] visited = new boolean[nodes];
-
-        // Start with sink and iterate over backedges of residual graph
-        Queue<Integer> queue = new LinkedList<Integer>();
-        queue.add(sink);
-        while (!queue.isEmpty()) {
-            int u = queue.remove();
-            visited[u] = true;
-
-            for (int v=0; v<nodes; v++) {
-                if (residualGraph[u][v] > 0 && residualGraph[u][v] != capacities[u][v]) {
-                    cost += residualGraph[u][v] * costsPerUnit[v][u];
-                }
-
-                if (!visited[v]) {
-                    queue.add(v);
-                }
-            }
-        }
-
-        return cost;
+    public static int minCostFlow(int[][] capacities, int[][] costsPerUnit, int source, int sink, int maxFlow) {
+        Network network = new Network(capacities, costsPerUnit);
+        Node sourceNode = network.getNodeByValue(source);
+        Node sinkNode = network.getNodeByValue(sink);
+        return minCostFlow(network, sourceNode, sinkNode, maxFlow);
     }
 
 
@@ -155,7 +105,7 @@ public class MinCostFlow {
 
         int[][] costPerUnit = {
                 { 0, 5, 7, 0, 0, 0 },
-                { 0, 0, 5, 0, 0, 0 },
+                { 0, 0, 5, 4, 2, 0 },
                 { 0, -4, 0, 6, 4, 0},
                 { 0, 0, 0, 0, 0, 7 },
                 { 0, 0, 0, -3, 0, -2},
@@ -165,7 +115,7 @@ public class MinCostFlow {
         int source = 0;
         int sink = 5;
 
-        int minCostFlow = minCostFlow(graph, costPerUnit, source, sink);
+        int minCostFlow = minCostFlow(graph, costPerUnit, source, sink, 4);
         System.out.println(minCostFlow);
     }
 }

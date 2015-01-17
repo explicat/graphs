@@ -1,3 +1,5 @@
+package maxFlowMinCost;
+
 import model.Edge;
 import model.Network;
 import model.Node;
@@ -29,6 +31,10 @@ public class NetworkAlgorithms {
 
             // Loop through edges
             for (Edge edge : network.getEdges()) {
+                if (edge.isResidual() && edge.getFlow() == 0) {
+                    continue;
+                }
+
                 if (edge.getFrom().getMark() + edge.getCost() < edge.getTo().getMark()) {
                     edge.getTo().setMark(edge.getFrom().getMark() + edge.getCost());
                     edge.getTo().setEdgeFromPredecessor(edge);
@@ -36,8 +42,14 @@ public class NetworkAlgorithms {
             }
         }
 
+        // TODO
+
         // Loop through edges again
         for (Edge edge : network.getEdges()) {
+            if (edge.isResidual() && edge.getFlow() == 0) {
+                continue;
+            }
+
             if (edge.getFrom().getMark() + edge.getCost() < edge.getTo().getMark()) {
                 // There must be a negative cycle
 
@@ -144,6 +156,38 @@ public class NetworkAlgorithms {
                 edge.getInverseEdge().setFlow(edge.getInverseEdge().getFlow() - pathFlow);
             }
             maxFlow += pathFlow;
+        }
+
+        residual.setMaxFlow(maxFlow);
+        return residual;
+    }
+
+
+    public static Network fordFulkerson(final Network network, Node source, Node sink, int maxFlow) {
+        Network residual = network.createResidual();
+        // Find source and sink nodes in residual network
+        source = residual.getNodeByValue(source.getValue());
+        sink = residual.getNodeByValue(sink.getValue());
+
+        int curFlow = 0;
+        List<Edge> path;
+        while (null != (path = bfs(residual, source, sink, true)) && (0 != maxFlow - curFlow)) {
+
+            // Find maximum capacity along edges of path
+            int pathFlow = Integer.MAX_VALUE;
+            for (Edge edge : path) {
+                pathFlow = Math.min(pathFlow, edge.getRemainingCapacity());
+            }
+
+            // We don't need to send more than maxFlow
+            pathFlow = Math.min(pathFlow, maxFlow - curFlow);
+
+            // Augment the flow
+            for (Edge edge : path) {
+                edge.setFlow(edge.getFlow() + pathFlow);
+                edge.getInverseEdge().setFlow(edge.getInverseEdge().getFlow() - pathFlow);
+            }
+            curFlow += pathFlow;
         }
 
         residual.setMaxFlow(maxFlow);

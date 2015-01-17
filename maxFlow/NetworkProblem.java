@@ -1,5 +1,6 @@
 package maxFlow;
 
+import maxFlowMinCost.NetworkAlgorithms;
 import model.Network;
 import model.Node;
 
@@ -33,7 +34,8 @@ public class NetworkProblem {
             }
         }
 
-        int maxFlow = NetworkAlgorithms.fordFulkerson(network, source, sink);
+        Network residual = NetworkAlgorithms.fordFulkerson(network, source, sink);
+        int maxFlow = residual.getMaxFlow();
         System.out.println(maxFlow);
     }
 }
