@@ -31,7 +31,8 @@ public class NetworkAlgorithms {
 
             // Loop through edges
             for (Edge edge : network.getEdges()) {
-                if (edge.isResidual() && edge.getFlow() == 0) {
+                // Consider only those forward edges which have remaining capacity, and backwards edges which have actual flow on it
+                if ((edge.isResidual() && edge.getFlow() == 0) || (!edge.isResidual() && edge.getRemainingCapacity() == 0)) {
                     continue;
                 }
 
@@ -46,7 +47,7 @@ public class NetworkAlgorithms {
 
         // Loop through edges again
         for (Edge edge : network.getEdges()) {
-            if (edge.isResidual() && edge.getFlow() == 0) {
+            if ((edge.isResidual() && edge.getFlow() == 0) || (!edge.isResidual() && edge.getRemainingCapacity() == 0)) {
                 continue;
             }
 
