@@ -10,6 +10,7 @@ public class DirectedEdge {
     private final int costs;
     private int flow;
     private DirectedEdge inverseEdge;
+    private boolean isResidualEdge;
 
     public DirectedEdge(int from, int to, int capacity, int costs) {
         this.from = from;
@@ -17,6 +18,7 @@ public class DirectedEdge {
         this.capacity = capacity;
         this.costs = costs;
         this.flow = 0;
+        this.isResidualEdge = false;
     }
 
     public DirectedEdge(int from, int to, int capacity) {
@@ -25,6 +27,7 @@ public class DirectedEdge {
         this.capacity = capacity;
         this.costs = 0;
         this.flow = 0;
+        this.isResidualEdge = false;
     }
 
     public DirectedEdge(DirectedEdge e) {
@@ -33,6 +36,7 @@ public class DirectedEdge {
         this.capacity = e.capacity;
         this.costs = e.costs;
         this.flow = e.flow;
+        this.isResidualEdge = e.isResidualEdge;
     }
 
     public int from() {
@@ -69,5 +73,13 @@ public class DirectedEdge {
 
     public void inverseEdge(DirectedEdge inverseEdge) {
         this.inverseEdge = inverseEdge;
+    }
+
+    public boolean isResidualEdge() {
+        return isResidualEdge;
+    }
+
+    public void setResidualEdge(boolean isResidualEdge) {
+        this.isResidualEdge = isResidualEdge;
     }
 }

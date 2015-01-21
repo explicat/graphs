@@ -9,11 +9,10 @@ import java.util.*;
  */
 public class Diagraph {
 
+    private final Set<Integer> nodes;
     private final Map<Integer, Set<DirectedEdge>> edges;
 
-    public Diagraph() {
-        this.edges = new HashMap<>();
-    }
+    /** Constructors **/
 
     public Diagraph(int[][] capacities) {
         this(capacities, null);
@@ -24,6 +23,7 @@ public class Diagraph {
             throw new IllegalArgumentException("capacities and costs must have same size");
         }
 
+        this.nodes = new HashSet<>();
         this.edges = new HashMap<>();
         for (int u=0; u<capacities.length; u++) {
             for (int v=0; v<capacities[u].length; v++) {
@@ -42,6 +42,7 @@ public class Diagraph {
 
     /** Clone constructor **/
     public Diagraph(Diagraph d) {
+        this.nodes = new HashSet<>();
         this.edges = new HashMap<>();
         for (DirectedEdge e : d.edges()) {
             this.addEdge(new DirectedEdge(e));
@@ -56,6 +57,7 @@ public class Diagraph {
 
         for (DirectedEdge e : residual.edges()) {
             DirectedEdge i = new DirectedEdge(e.to(), e.from(), e.flow(), -e.costs());
+            i.setResidualEdge(true);
             i.inverseEdge(e);
             e.inverseEdge(i);
             inverseEdges.add(i);
@@ -70,6 +72,9 @@ public class Diagraph {
 
 
     /** Getters **/
+    public Set<Integer> nodes() {
+        return nodes;
+    }
 
     public Set<DirectedEdge> edges() {
         HashSet<DirectedEdge> allEdges = new HashSet<>();
@@ -102,12 +107,15 @@ public class Diagraph {
         return edgesFromTo;
     }
 
-    public int nodes() {
-        return edges.size();
+    public int numberNodes() {
+        return nodes.size();
     }
 
     /** Modifying methods **/
     public void addEdge(DirectedEdge edge) {
+        nodes.add(edge.from());
+        nodes.add(edge.to());
+
         int from  = edge.from();
         if (!edges.containsKey(from)) {
             edges.put(from, new HashSet<>());
