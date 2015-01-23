@@ -7,6 +7,7 @@ import java.util.*;
  * Created by explicat on 23.01.2015.
  */
 public class BellmanFord {
+
     private HashMap<Integer, Integer> distTo;               // distTo[v] = distance  of shortest s->v path
     private HashMap<Integer, DirectedEdge> edgeTo;         // edgeTo[v] = last edge on shortest s->v path
     private Set<Integer> onQueue;             // onQueue[v] = is v currently on the queue?
@@ -17,38 +18,37 @@ public class BellmanFord {
     /**
      * Computes a shortest paths tree from <tt>s</tt> to every other vertex in
      * the edge-weighted digraph <tt>G</tt>.
-     * @param digraph the acyclic digraph
+     * @param G the acyclic digraph
      * @param s the source vertex
      * @throws IllegalArgumentException unless 0 &le; <tt>s</tt> &le; <tt>V</tt> - 1
      */
-    public BellmanFord(Digraph digraph, int s) {
-
+    public BellmanFord(Digraph G, int s) {
         distTo  = new HashMap<>();
         edgeTo  = new HashMap<>();
         onQueue = new HashSet<>();
 
-        for (int node : digraph.nodes()) {
+        // Initialize all distances to infinity, whereas the start vertex is assigned distance zero
+        for (int node : G.nodes()) {
             distTo.put(node, Integer.MAX_VALUE);
         }
-
         distTo.put(s, 0);
 
         // Bellman-Ford algorithm
-        queue = new ArrayDeque<Integer>();
-        queue.offer(s);
+        queue = new LinkedList<>();
+        queue.add(s);
         onQueue.add(s);
         while (!queue.isEmpty() && !hasNegativeCycle()) {
             int v = queue.remove();
             onQueue.remove(v);
-            relax(digraph, v);
+            relax(G, v);
         }
 
-        assert check(digraph, s);
+        assert check(G, s);
     }
 
     // relax vertex v and put other endpoints on queue if changed
-    private void relax(Digraph digraph, int v) {
-        for (DirectedEdge e : digraph.neighbors(v)) {
+    private void relax(Digraph G, int v) {
+        for (DirectedEdge e : G.neighbors(v)) {
             if (e.capacity() - e.flow() <= 0) {
                 continue;   // Ignore edges which have no capacity left
             }
@@ -60,7 +60,7 @@ public class BellmanFord {
                     queue.offer(w);
                     onQueue.add(w);
                 }
-                if (relaxCount++ % digraph.numberNodes() == 0) {
+                if (relaxCount++ % G.numberNodes() == 0) {
                     findNegativeCycle();
                 }
             }
@@ -88,9 +88,7 @@ public class BellmanFord {
 
     // by finding a cycle in predecessor graph
     private void findNegativeCycle() {
-        int V = edgeTo.size();
         Digraph spt = new Digraph();
-
         for (DirectedEdge e : edgeTo.values()) {
             spt.addEdge(e);
         }
@@ -147,7 +145,7 @@ public class BellmanFord {
     //     or
     // (ii)  for all edges e = v->w:            distTo[w] <= distTo[v] + e.weight()
     // (ii') for all edges e = v->w on the SPT: distTo[w] == distTo[v] + e.weight()
-    private boolean check(Digraph digraph, int s) {
+    private boolean check(Digraph G, int s) {
 
         // has a negative cycle
         if (hasNegativeCycle()) {
@@ -170,7 +168,7 @@ public class BellmanFord {
                 return false;
             }
 
-            for (Integer v : digraph.nodes()) {
+            for (Integer v : G.nodes()) {
                 if (v == s) {
                     continue;
                 }
@@ -182,8 +180,8 @@ public class BellmanFord {
             }
 
             // check that all edges e = v->w satisfy distTo[w] <= distTo[v] + e.weight()
-            for (Integer v : digraph.nodes()) {
-                for (DirectedEdge e : digraph.neighbors(v)) {
+            for (Integer v : G.nodes()) {
+                for (DirectedEdge e : G.neighbors(v)) {
                     if (e.capacity() - e.flow() <= 0) {
                         continue;   // Ignore edges which have no capacity left
                     }
@@ -197,7 +195,7 @@ public class BellmanFord {
             }
 
             // check that all edges e = v->w on SPT satisfy distTo[w] == distTo[v] + e.weight()
-            for (Integer w : digraph.nodes()) {
+            for (Integer w : G.nodes()) {
                 if (edgeTo.get(w) == null) {
                     continue;
                 }
