@@ -1,7 +1,5 @@
 package diagraph;
 
-import model.Edge;
-
 import java.util.*;
 
 /**
@@ -122,7 +120,7 @@ public class Diagraph {
 
         int from  = edge.from();
         if (!edges.containsKey(from)) {
-            edges.put(from, new HashSet<>());
+            edges.put(from, new HashSet<DirectedEdge>());
         }
         Set<DirectedEdge> outgoingEdges = edges.get(from);
         outgoingEdges.add(edge);

@@ -11,7 +11,7 @@ public class BellmanFord {
     private HashMap<Integer, DirectedEdge> edgeTo;         // edgeTo[v] = last edge on shortest s->v path
     private Set<Integer> onQueue;             // onQueue[v] = is v currently on the queue?
     private Queue<Integer> queue;          // queue of vertices to relax
-    private int cost;                      // number of calls to relax()
+    private int relaxCount;                      // number of calls to relax()
     private Iterable<DirectedEdge> cycle;  // negative cycle (or null if no such cycle)
 
     /**
@@ -60,7 +60,7 @@ public class BellmanFord {
                     queue.offer(w);
                     onQueue.add(w);
                 }
-                if (cost++ % diagraph.numberNodes() == 0) {
+                if (relaxCount++ % diagraph.numberNodes() == 0) {
                     findNegativeCycle();
                 }
             }
@@ -104,7 +104,7 @@ public class BellmanFord {
      * @param v the destination vertex
      * @return the length of a shortest path from the source vertex <tt>s</tt> to vertex <tt>v</tt>;
      *    <tt>Double.POSITIVE_INFINITY</tt> if no such path
-     * @throws UnsupportedOperationException if there is a negative cost cycle reachable
+     * @throws UnsupportedOperationException if there is a negative relaxCount cycle reachable
      *    from the source vertex <tt>s</tt>
      */
     public double distTo(int v) {
@@ -128,7 +128,7 @@ public class BellmanFord {
      * @param v the destination vertex
      * @return a shortest path from the source <tt>s</tt> to vertex <tt>v</tt>
      *    as an iterable of edges, and <tt>null</tt> if no such path
-     * @throws UnsupportedOperationException if there is a negative cost cycle reachable
+     * @throws UnsupportedOperationException if there is a negative relaxCount cycle reachable
      *    from the source vertex <tt>s</tt>
      */
     public Iterable<DirectedEdge> pathTo(int v) {
