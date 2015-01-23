@@ -5,22 +5,22 @@ import java.util.*;
 /**
  * Created by explicat on 21.01.2015.
  */
-public class Diagraph {
+public class Digraph {
 
     private final Set<Integer> nodes;
     private final Map<Integer, Set<DirectedEdge>> edges;
 
     /** Constructors **/
-    public Diagraph() {
+    public Digraph() {
         this.nodes = new HashSet<>();
         this.edges = new HashMap<>();
     }
 
-    public Diagraph(int[][] capacities) {
+    public Digraph(int[][] capacities) {
         this(capacities, null);
     }
 
-    public Diagraph(int[][] capacities, int[][] costs) {
+    public Digraph(int[][] capacities, int[][] costs) {
         if (null != costs && capacities.length != costs.length) {
             throw new IllegalArgumentException("capacities and costs must have same size");
         }
@@ -43,20 +43,20 @@ public class Diagraph {
     }
 
     /** Clone constructor **/
-    public Diagraph(Diagraph d) {
+    public Digraph(Digraph G) {
         this.nodes = new HashSet<>();
         this.edges = new HashMap<>();
-        for (DirectedEdge e : d.edges()) {
+        for (DirectedEdge e : G.edges()) {
             this.addEdge(new DirectedEdge(e));
         }
     }
 
 
-    public static Diagraph createResidual(Diagraph d) {
-        Diagraph residual = new Diagraph(d);    // Clone the diagraph first
-        // For each edge, create an inverse edge
+    public Digraph createResidual() {
+        Digraph residual = new Digraph(this);    // Clone the digraph first
         List<DirectedEdge> inverseEdges = new ArrayList<>();
 
+        // For each edge, create an inverse edge
         for (DirectedEdge e : residual.edges()) {
             DirectedEdge i = new DirectedEdge(e.to(), e.from(), e.flow(), -e.costs());
             i.setResidualEdge(true);

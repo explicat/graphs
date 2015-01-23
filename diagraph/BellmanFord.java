@@ -17,17 +17,17 @@ public class BellmanFord {
     /**
      * Computes a shortest paths tree from <tt>s</tt> to every other vertex in
      * the edge-weighted digraph <tt>G</tt>.
-     * @param diagraph the acyclic digraph
+     * @param digraph the acyclic digraph
      * @param s the source vertex
      * @throws IllegalArgumentException unless 0 &le; <tt>s</tt> &le; <tt>V</tt> - 1
      */
-    public BellmanFord(Diagraph diagraph, int s) {
+    public BellmanFord(Digraph digraph, int s) {
 
         distTo  = new HashMap<>();
         edgeTo  = new HashMap<>();
         onQueue = new HashSet<>();
 
-        for (int node : diagraph.nodes()) {
+        for (int node : digraph.nodes()) {
             distTo.put(node, Integer.MAX_VALUE);
         }
 
@@ -40,15 +40,15 @@ public class BellmanFord {
         while (!queue.isEmpty() && !hasNegativeCycle()) {
             int v = queue.remove();
             onQueue.remove(v);
-            relax(diagraph, v);
+            relax(digraph, v);
         }
 
-        assert check(diagraph, s);
+        assert check(digraph, s);
     }
 
     // relax vertex v and put other endpoints on queue if changed
-    private void relax(Diagraph diagraph, int v) {
-        for (DirectedEdge e : diagraph.neighbors(v)) {
+    private void relax(Digraph digraph, int v) {
+        for (DirectedEdge e : digraph.neighbors(v)) {
             if (e.capacity() - e.flow() <= 0) {
                 continue;   // Ignore edges which have no capacity left
             }
@@ -60,7 +60,7 @@ public class BellmanFord {
                     queue.offer(w);
                     onQueue.add(w);
                 }
-                if (relaxCount++ % diagraph.numberNodes() == 0) {
+                if (relaxCount++ % digraph.numberNodes() == 0) {
                     findNegativeCycle();
                 }
             }
@@ -89,7 +89,7 @@ public class BellmanFord {
     // by finding a cycle in predecessor graph
     private void findNegativeCycle() {
         int V = edgeTo.size();
-        Diagraph spt = new Diagraph();
+        Digraph spt = new Digraph();
 
         for (DirectedEdge e : edgeTo.values()) {
             spt.addEdge(e);
@@ -147,7 +147,7 @@ public class BellmanFord {
     //     or
     // (ii)  for all edges e = v->w:            distTo[w] <= distTo[v] + e.weight()
     // (ii') for all edges e = v->w on the SPT: distTo[w] == distTo[v] + e.weight()
-    private boolean check(Diagraph diagraph, int s) {
+    private boolean check(Digraph digraph, int s) {
 
         // has a negative cycle
         if (hasNegativeCycle()) {
@@ -170,7 +170,7 @@ public class BellmanFord {
                 return false;
             }
 
-            for (Integer v : diagraph.nodes()) {
+            for (Integer v : digraph.nodes()) {
                 if (v == s) {
                     continue;
                 }
@@ -182,8 +182,8 @@ public class BellmanFord {
             }
 
             // check that all edges e = v->w satisfy distTo[w] <= distTo[v] + e.weight()
-            for (Integer v : diagraph.nodes()) {
-                for (DirectedEdge e : diagraph.neighbors(v)) {
+            for (Integer v : digraph.nodes()) {
+                for (DirectedEdge e : digraph.neighbors(v)) {
                     if (e.capacity() - e.flow() <= 0) {
                         continue;   // Ignore edges which have no capacity left
                     }
@@ -197,7 +197,7 @@ public class BellmanFord {
             }
 
             // check that all edges e = v->w on SPT satisfy distTo[w] == distTo[v] + e.weight()
-            for (Integer w : diagraph.nodes()) {
+            for (Integer w : digraph.nodes()) {
                 if (edgeTo.get(w) == null) {
                     continue;
                 }

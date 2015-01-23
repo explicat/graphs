@@ -19,29 +19,29 @@ public class EdgeWeightedDirectedCycle {
      * Determines whether the edge-weighted digraph <tt>G</tt> has a directed cycle and,
      * if so, finds such a cycle.
      *
-     * @param diagraph the edge-weighted digraph
+     * @param digraph the edge-weighted digraph
      */
-    public EdgeWeightedDirectedCycle(Diagraph diagraph) {
-        marked = new HashSet<>(diagraph.numberNodes());
-        onStack = new HashSet<>(diagraph.numberNodes());
-        edgeTo = new HashMap<>(diagraph.numberNodes());
+    public EdgeWeightedDirectedCycle(Digraph digraph) {
+        marked = new HashSet<>(digraph.numberNodes());
+        onStack = new HashSet<>(digraph.numberNodes());
+        edgeTo = new HashMap<>(digraph.numberNodes());
 
-        for (Integer v : diagraph.nodes()) {
+        for (Integer v : digraph.nodes()) {
             if (!marked.contains(v)) {
-                dfs(diagraph, v);
+                dfs(digraph, v);
             }
         }
 
         // check that digraph has a cycle
-        assert check(diagraph);
+        assert check(digraph);
     }
 
     // check that algorithm computes either the topological order or finds a directed cycle
-    private void dfs(Diagraph diagraph, int v) {
+    private void dfs(Digraph digraph, int v) {
         onStack.add(v);
         marked.add(v);
 
-        for (DirectedEdge e : diagraph.neighbors(v)) {
+        for (DirectedEdge e : digraph.neighbors(v)) {
             if (e.capacity() - e.flow() <= 0) {
                 continue;   // Ignore edges which have no capacity left
             }
@@ -54,7 +54,7 @@ public class EdgeWeightedDirectedCycle {
                 //found new vertex, so recur
             else if (!marked.contains(w)) {
                 edgeTo.put(w, e);
-                dfs(diagraph, w);
+                dfs(digraph, w);
             }
 
             // trace back directed cycle
@@ -94,7 +94,7 @@ public class EdgeWeightedDirectedCycle {
 
 
     // certify that digraph is either acyclic or has a directed cycle
-    private boolean check(Diagraph diagraph) {
+    private boolean check(Digraph digraph) {
 
         // edge-weighted digraph is cyclic
         if (hasCycle()) {

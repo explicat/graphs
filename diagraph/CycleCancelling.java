@@ -1,7 +1,5 @@
 package diagraph;
 
-import java.util.*;
-
 /**
  * Created by explicat on 21.01.2015.
  */
@@ -102,8 +100,17 @@ public class CycleCancelling {
 //    }
 
 
-    public static int minCostFlow(Diagraph diagraph, final int source, final int sink, final int maxFlow) {
-        Diagraph residual = FordFulkerson.fordFulkerson(diagraph, source, sink, maxFlow);
+    /**
+     * Cycle cancelling algorithm for min-cost-flow problems. Finds a valid routing for the given demand using the Ford Fulkerson algorithm. The resulting residual graph does not display the optimal solution as long as it contains negative cycles.
+     * @param digraph directed graph, which can also contain several edges sharing the same source and sink vertex
+     * @param source number of source vertex
+     * @param sink number of sink vertex
+     * @param demand flow which to send through the network
+     * @return minimal costs to send demand through the network
+     */
+    public static int minCostFlow(Digraph digraph, final int source, final int sink, final int demand) {
+        // Find a valid routing for the demand of flow
+        Digraph residual = FordFulkerson.fordFulkerson(digraph, source, sink, demand);
 
         // Cancel out negative cycles
         BellmanFord bellmanFord = new BellmanFord(residual, source);
@@ -143,7 +150,7 @@ public class CycleCancelling {
 
 
     public static void main(String[] args) {
-
+        // Example
         int[][] capacities = {
                 { 0, 4, 3, 0, 0, 0 },
                 { 0, 0, 1, 3, 3, 0 },
@@ -165,8 +172,8 @@ public class CycleCancelling {
         int source = 0;
         int sink = 5;
 
-        Diagraph diagraph = new Diagraph(capacities, costs);
-        int minCostFlow = minCostFlow(diagraph, source, sink, 4);
+        Digraph digraph = new Digraph(capacities, costs);
+        int minCostFlow = minCostFlow(digraph, source, sink, 4);
         System.out.println(minCostFlow);
     }
 }
