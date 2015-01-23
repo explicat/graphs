@@ -13,6 +13,10 @@ public class Diagraph {
     private final Map<Integer, Set<DirectedEdge>> edges;
 
     /** Constructors **/
+    public Diagraph() {
+        this.nodes = new HashSet<>();
+        this.edges = new HashMap<>();
+    }
 
     public Diagraph(int[][] capacities) {
         this(capacities, null);

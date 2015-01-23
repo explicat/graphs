@@ -106,8 +106,9 @@ public class CycleCancelling {
         Diagraph residual = FordFulkerson.fordFulkerson(diagraph, source, sink, maxFlow);
 
         // Cancel out negative cycles
-        List<DirectedEdge> negativeCyle = bellmannFord(residual, source);
-        while (null != negativeCyle) {
+        BellmanFord bellmanFord = new BellmanFord(residual, source);
+        while (bellmanFord.hasNegativeCycle()) {
+            Iterable<DirectedEdge> negativeCyle = bellmanFord.negativeCycle();
             // Find the minimum flow which we can shift
             int pathFlow = Integer.MAX_VALUE;
             for (DirectedEdge edge : negativeCyle) {
@@ -127,9 +128,10 @@ public class CycleCancelling {
                 }
             }
 
-            negativeCyle = bellmannFord(residual, source);
+            bellmanFord = new BellmanFord(residual, source);
         }
 
+        // Gather costs
         int costs = 0;
         for (DirectedEdge edge : residual.edges()) {
             if (!edge.isResidualEdge()) {
