@@ -1,5 +1,3 @@
-package diagraph;
-
 /**
  * Created by explicat on 21.01.2015.
  */
